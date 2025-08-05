@@ -101,7 +101,7 @@ class FlutterFeatherService extends FeathersService {
       Map<String, dynamic> queryParameters = const {}}) async {
     try {
       final Response<T> response =
-          await dio.post(path, data: body, queryParameters: queryParameters);
+          await dio.post<T>(path, data: body, queryParameters: queryParameters);
       return response;
     } catch (error) {
       return _handleError(error);

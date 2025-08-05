@@ -6,22 +6,11 @@ Future<void> main() async {
   ///
   /// Initialize app with your base url and authentication configs if any
   ///
-  FlutterFeathersApp app = FlutterFeathersApp('<base url>',
-      authConfig: AuthConfig('<authentication path>',
-          authMode: AuthMode.authenticateOnExpire,
-          sharedPrefKey: 'accessToken'));
+  FlutterFeathersApp app = FlutterFeathersApp(
+    "",
+  );
 
   app.initialize();
-
-  ///
-  /// Authenticate your app
-  ///
-  app.authenticate(body: {}, queryParameters: {});
-
-  ///
-  /// Re-authenticate your app if needed
-  ///
-  app.reAuthenticate(AuthMode.authenticateOnExpire);
 
   ///
   /// If you need to access any other api rather than your base url
