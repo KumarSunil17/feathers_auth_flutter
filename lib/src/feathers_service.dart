@@ -13,12 +13,10 @@ abstract class FeathersService {
   ///
   String servicePath;
 
-  ///
-  /// Dio client for handling APi calls
-  ///
-  Dio dio;
-
-  FeathersService(this.app, this.servicePath, this.dio);
+  FeathersService(
+    this.app,
+    this.servicePath,
+  );
 
   ///
   /// Full path/url for api calls
@@ -28,133 +26,287 @@ abstract class FeathersService {
   ///
   /// GET method request with optional queryParameters
   ///
-  Future<Response<T>> get<T>({Map<String, dynamic> queryParameters});
+  Future<Response<T>> get<T>(
+      {Map<String, dynamic> queryParameters,
+      T Function(dynamic data)? decoder});
 
   ///
   /// FIND method request with required id and optional queryParameters
   ///
   Future<Response<T>> find<T>(String id,
-      {Map<String, dynamic> queryParameters});
+      {Map<String, dynamic> queryParameters,
+      T Function(dynamic data)? decoder});
 
   ///
   /// CREATE method request with and optional body and query Parameters
   ///
   Future<Response<T>> create<T>(
-      {dynamic body = const {}, Map<String, dynamic> queryParameters});
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters,
+      T Function(dynamic data)? decoder});
 
   ///
   /// FIND method request with required id and optional queryParameters
   ///
   Future<Response<T>> update<T>(String id,
-      {dynamic body = const {}, Map<String, dynamic> queryParameters});
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters,
+      T Function(dynamic data)? decoder});
 
   ///
   /// PATCH method request with required id and optional queryParameters
   ///
   Future<Response<T>> patch<T>(String id,
-      {dynamic body = const {}, Map<String, dynamic> queryParameters});
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters,
+      T Function(dynamic data)? decoder});
 
   ///
   /// DELETE method request with required id and optional queryParameters
   ///
   Future<Response<T>> delete<T>(String id,
-      {dynamic body = const {}, Map<String, dynamic> queryParameters});
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters,
+      T Function(dynamic data)? decoder});
+
+  ///
+  /// Connect to the socket server
+  ///
+  Future connectSocket();
+
+  ///
+  /// Emit an event with optional data
+  ///
+  Future emit(String event, dynamic data);
+
+  ///
+  /// Emit an event with acknowledgment callback
+  ///
+  Future emitWithAck(String event, dynamic data);
+
+  ///
+  /// Listen to a socket event
+  ///
+  void on(String event, Function(dynamic data) callback);
+
+  ///
+  /// Remove a socket event listener
+  ///
+  void off(String event);
+
+  Response<T> transformResponse<T>(Response response, T data) {
+    return Response<T>(
+      data: data,
+      headers: response.headers,
+      requestOptions: response.requestOptions,
+      statusCode: response.statusCode,
+      statusMessage: response.statusMessage,
+      redirects: response.redirects,
+      isRedirect: response.isRedirect,
+      extra: response.extra,
+    );
+  }
 }
 
 class FlutterFeatherService extends FeathersService {
   FlutterFeathersApp app;
   String servicePath;
-  Dio dio;
-  FlutterFeatherService(this.app, this.servicePath, this.dio)
-      : super(app, servicePath, dio);
+
+  FlutterFeatherService(this.app, this.servicePath) : super(app, servicePath);
 
   @override
-  String get path => app.baseUrl + path;
+  String get path => app.baseUrl + servicePath;
+
+  socketClient.Socket get socket => app._socket;
 
   @override
-  Future<Response<T>> get<T>(
-      {Map<String, dynamic> queryParameters = const {}}) async {
+  Future<Response<T>> get<T>({
+    Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+  }) async {
+    try {
+      final Response response = await app._dio.get(
+        path,
+        queryParameters: queryParameters,
+      );
+
+      if (decoder != null) {
+        final T decodedData = decoder(response.data);
+        return transformResponse(response, decodedData);
+      }
+      return transformResponse(response, response.data as T);
+    } catch (error, s) {
+      print("ERROR $error\n$s");
+      return _handleError(error);
+    }
+  }
+
+  @override
+  Future<Response<T>> find<T>(
+    String id, {
+    Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+  }) async {
     try {
       final Response<T> response =
-          await dio.get(path, queryParameters: queryParameters);
-      return response;
+          await app._dio.get('$path/$id', queryParameters: queryParameters);
+      if (decoder != null) {
+        final T decodedData = decoder(response.data);
+        return transformResponse(response, decodedData);
+      }
+      return transformResponse(response, response.data as T);
     } catch (error) {
       return _handleError(error);
     }
   }
 
   @override
-  Future<Response<T>> find<T>(String id,
-      {Map<String, dynamic> queryParameters = const {}}) async {
+  Future<Response<T>> create<T>({
+    dynamic body = const {},
+    Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+  }) async {
+    try {
+      final Response<T> response = await app._dio
+          .post<T>(path, data: body, queryParameters: queryParameters);
+      if (decoder != null) {
+        final T decodedData = decoder(response.data);
+        return transformResponse(response, decodedData);
+      }
+      return transformResponse(response, response.data as T);
+    } catch (error) {
+      return _handleError(error);
+    }
+  }
+
+  @override
+  Future<Response<T>> update<T>(
+    String id, {
+    dynamic body = const {},
+    Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+  }) async {
+    try {
+      final Response<T> response = await app._dio
+          .patch('$path/$id', data: body, queryParameters: queryParameters);
+      if (decoder != null) {
+        final T decodedData = decoder(response.data);
+        return transformResponse(response, decodedData);
+      }
+      return transformResponse(response, response.data as T);
+    } catch (error) {
+      return _handleError(error);
+    }
+  }
+
+  @override
+  Future<Response<T>> patch<T>(
+    String id, {
+    dynamic body = const {},
+    Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+  }) async {
+    try {
+      final Response<T> response = await app._dio
+          .patch('$path/$id', data: body, queryParameters: queryParameters);
+      if (decoder != null) {
+        final T decodedData = decoder(response.data);
+        return transformResponse(response, decodedData);
+      }
+      return transformResponse(response, response.data as T);
+    } catch (error) {
+      return _handleError(error);
+    }
+  }
+
+  @override
+  Future<Response<T>> delete<T>(
+    String id, {
+    dynamic body = const {},
+    Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+  }) async {
     try {
       final Response<T> response =
-          await dio.get('$path/$id', queryParameters: queryParameters);
-      return response;
-    } catch (error) {
-      return _handleError(error);
-    }
-  }
-
-  @override
-  Future<Response<T>> create<T>(
-      {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {}}) async {
-    try {
-      final Response<T> response =
-          await dio.post<T>(path, data: body, queryParameters: queryParameters);
-      return response;
-    } catch (error) {
-      return _handleError(error);
-    }
-  }
-
-  @override
-  Future<Response<T>> update<T>(String id,
-      {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {}}) async {
-    try {
-      final Response<T> response = await dio.patch('$path/$id',
-          data: body, queryParameters: queryParameters);
-      return response;
-    } catch (error) {
-      return _handleError(error);
-    }
-  }
-
-  @override
-  Future<Response<T>> patch<T>(String id,
-      {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {}}) async {
-    try {
-      final Response<T> response = await dio.patch('$path/$id',
-          data: body, queryParameters: queryParameters);
-      return response;
-    } catch (error) {
-      return _handleError(error);
-    }
-  }
-
-  @override
-  Future<Response<T>> delete<T>(String id,
-      {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {}}) async {
-    try {
-      final Response<T> response =
-          await dio.delete('$path/$id', queryParameters: queryParameters);
-      return response;
+          await app._dio.delete('$path/$id', queryParameters: queryParameters);
+      if (decoder != null) {
+        final T decodedData = decoder(response.data);
+        return transformResponse(response, decodedData);
+      }
+      return transformResponse(response, response.data as T);
     } catch (error) {
       return _handleError(error);
     }
   }
 
   Future<Response<T>> _handleError<T>(error) {
-    if (error.response == null) {
-      return Future.error(FeathersError.noInternet());
-    } else if (error is DioError) {
-      return Future.error(FeathersError.fromJson(error.response!.data));
+    if (error is DioException) {
+      if (error.response == null) {
+        return Future.error(FeathersError.noInternet());
+      } else {
+        return Future.error(FeathersError.fromJson(error.response!.data));
+      }
     } else {
       return Future.error(FeathersError(
           message: error.toString(), name: 'Some error occurred'));
     }
+  }
+
+  @override
+  Future connectSocket() async {
+    final completer = Completer<dynamic>();
+    socket.connect();
+    socket.onConnectError((e) {
+      print("ON_SOCKET_CONNECT_ERROR ${e}");
+      completer.completeError('Socket not connected');
+    });
+    socket.onConnect((e) {
+      completer.complete(e);
+      print("ON_SOCKET_CONNECT  ${e}");
+    });
+
+    socket.onDisconnect((e){
+      completer.complete(e);
+      print("ON_SOCKET_DISCONNECT  ${e}");
+    });
+    return completer.future;
+  }
+
+  @override
+  Future emit(String event, dynamic data) {
+    final completer = Completer<dynamic>();
+
+    if (socket.connected) {
+      socket.emit(servicePath + " "+ event, data);
+      completer.complete(data);
+    } else {
+      completer.completeError('Socket not connected');
+    }
+
+    return completer.future;
+  }
+
+  Future<dynamic> emitWithAck(String event, dynamic data) async {
+    final completer = Completer<dynamic>();
+
+    if (socket.connected) {
+      socket.emitWithAck(servicePath + " "+ event, data, ack: (response) {
+        completer.complete(response);
+      });
+    } else {
+      completer.completeError('Socket not connected');
+    }
+
+    return completer.future;
+  }
+
+  @override
+  void on(String event, Function(dynamic data) callback) {
+    socket.on(servicePath +" "+ event, callback);
+  }
+
+  @override
+  void off(String event) {
+    socket.off(servicePath + " "+ event);
   }
 }

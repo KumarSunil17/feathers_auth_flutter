@@ -25,7 +25,7 @@ import 'package:feathers_auth_flutter/feathers_auth_flutter.dart';
 ### Initialize
 ```dart
 final FlutterFeathersApp app = FlutterFeathersApp('<base url>',
-    authConfig: AuthConfig('<authentication path>',
+    authConfig: AuthConfig('<authen tication path>',
         authMode: AuthMode.authenticateOnExpire,
         sharedPrefKey: 'accessToken'));
 
@@ -57,4 +57,28 @@ log('USER SERVICE GET ${usersRes.data}');
 ```dart
 final res = await app.rawDio.get<String>('<any outside urls>');
 log('RAW GET ${res.data}');
+```
+
+### For connect a socket
+```dart
+ final FlutterFeatherService getMessageSocket =
+app.service('v1/message-recipients');
+final res = await getMessageSocket.connect();
+```
+
+### For receive data from socket
+```dart
+ getMessageSocket.on("created", (data) {
+    print("NEW_MESSAGE ${data}");
+  });
+```
+
+### To send data in socket
+```dart
+final socketRes = await getMessageSocket.emit('create', {
+    "entityType": "userGroup",
+    "recipient": "678f40a3f48861514cf87948",
+    "text": "hey,there",
+  });
+  print("SOCKET EMIT RESPONSE ${socketRes}");
 ```

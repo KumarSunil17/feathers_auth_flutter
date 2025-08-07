@@ -11,6 +11,7 @@ abstract class FeathersApp {
   ///
   late Dio _dio;
   late IO.Socket io;
+  late socketClient.Socket _socket;
 
   FeathersApp(this.baseUrl);
 
@@ -18,6 +19,7 @@ abstract class FeathersApp {
   /// Configure app using base url
   ///
   void initialize();
+  void setAccessToken(String token);
 
   FlutterFeatherService service(String path);
 }
@@ -32,6 +34,16 @@ class FlutterFeathersApp extends FeathersApp {
   void initialize() {
     _dio = Dio();
     super._dio = _dio;
+    _socket = socketClient.io(baseUrl, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+      'reconnect':true
+    });
+    super._socket = _socket;
+  }
+ @override
+  void setAccessToken(String token) {
+    _dio.options.headers["Authorization"] = "Bearer $token";
   }
 
   ///
@@ -40,11 +52,12 @@ class FlutterFeathersApp extends FeathersApp {
   ///
   @override
   FlutterFeatherService service(String path) {
-    return FlutterFeatherService(this, path, _dio);
+    return FlutterFeatherService(this, path);
   }
 
   ///
   /// Raw dio client for other api calls
   ///
   Dio get rawDio => _dio;
+
 }
