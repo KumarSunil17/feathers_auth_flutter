@@ -1,4 +1,4 @@
-package com.smarttersstudio.feathers_auth_flutter_example
+package com.smarttersstudio.feathers_client_flutter_example
 
 import io.flutter.embedding.android.FlutterActivity
 

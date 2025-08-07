@@ -1,4 +1,4 @@
-library feathers_auth_flutter;
+library feathers_client_flutter;
 
 import 'dart:async';
 import 'dart:convert';

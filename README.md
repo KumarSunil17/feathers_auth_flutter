@@ -1,4 +1,4 @@
-# feathers_auth_flutter
+# feathers_client_flutter
 
 Feathers client for Dart
 
@@ -14,12 +14,12 @@ Feathers client for Dart
 
 ```yaml
 dependencies:
-  feathers_auth_flutter: #latest version
+  feathers_client_flutter: #latest version
 ```
 
 ### Import plugin class to your file
 ```dart
-import 'package:feathers_auth_flutter/feathers_auth_flutter.dart';
+import 'package:feathers_client_flutter/feathers_client_flutter.dart';
 ```
 
 ### Initialize
@@ -30,16 +30,6 @@ final FlutterFeathersApp app = FlutterFeathersApp('<base url>',
         sharedPrefKey: 'accessToken'));
 
 app.initialize();
-```
-
-### Authenticate (if required)
-```dart
-app.authenticate(body: {}, queryParameters: {});
-```
-
-### Re-authenticate (if required)
-```dart
-app.reAuthenticate(AuthMode.authenticateOnExpire);
 ```
 
 ### Create a service

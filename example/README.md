@@ -1,6 +1,6 @@
-# feathers_auth_flutter_example
+# feathers_client_flutter_example
 
-Demonstrates how to use the feathers_auth_flutter plugin.
+Demonstrates how to use the feathers_client_flutter plugin.
 
 ## Getting Started
 

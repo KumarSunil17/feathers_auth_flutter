@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:async';
-import 'package:feathers_auth_flutter/feathers_auth_flutter.dart';
-import 'package:feathers_auth_flutter_example/gender_response.dart';
+import 'package:feathers_client_flutter/feathers_client_flutter.dart';
+import 'package:feathers_client_flutter_example/gender_response.dart';
 
 Future<void> main() async {
   ///
@@ -28,7 +28,7 @@ Future<void> main() async {
   final FlutterFeatherService messageService =
       app.service('/v1/chat/personal-chat/messages');
   final FlutterFeatherService getMessageSocket =
-  app.service('v1/message-recipients');
+      app.service('v1/message-recipients');
 
   ///
   /// Get response from service
@@ -48,19 +48,21 @@ Future<void> main() async {
       [
         "authentication",
         {
-          "deviceId": "ewrfysfetfhgfdgddhtsdfrerdwrfgufnjweihrufihruhdfuewjiojojfdqr",
+          "deviceId":
+              "ewrfysfetfhgfdgddhtsdfrerdwrfgufnjweihrufihruhdfuewjiojojfdqr",
           "deviceType": "2",
-          "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOjIyMCwiaWF0IjoxNzU0NTUyNjc4LCJleHAiOjE3NTcxNDQ2NzgsImF1ZCI6Imh0dHBzOi8veW91cmRvbWFpbi5jb20iLCJpc3MiOiJmZWF0aGVycyIsImp0aSI6IjQyMzQzODM0LWRhZjQtNDdjYy1iZGU0LWNjY2Y0MjUxODM2OCJ9.e7f88Npykl3jVR4cmwapGaETDuekylRUoYb2Is6l2CU",
+          "accessToken":
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOjIyMCwiaWF0IjoxNzU0NTUyNjc4LCJleHAiOjE3NTcxNDQ2NzgsImF1ZCI6Imh0dHBzOi8veW91cmRvbWFpbi5jb20iLCJpc3MiOiJmZWF0aGVycyIsImp0aSI6IjQyMzQzODM0LWRhZjQtNDdjYy1iZGU0LWNjY2Y0MjUxODM2OCJ9.e7f88Npykl3jVR4cmwapGaETDuekylRUoYb2Is6l2CU",
           "strategy": "jwt",
           "fcmId": "sahjadhdhsadhsadsds",
         }
       ],
     ).then((e) async {
-      app.setAccessToken( "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOjIyMCwiaWF0IjoxNzU0NTUyNjc4LCJleHAiOjE3NTcxNDQ2NzgsImF1ZCI6Imh0dHBzOi8veW91cmRvbWFpbi5jb20iLCJpc3MiOiJmZWF0aGVycyIsImp0aSI6IjQyMzQzODM0LWRhZjQtNDdjYy1iZGU0LWNjY2Y0MjUxODM2OCJ9.e7f88Npykl3jVR4cmwapGaETDuekylRUoYb2Is6l2CU",);
+      app.setAccessToken(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJzdWIiOjIyMCwiaWF0IjoxNzU0NTUyNjc4LCJleHAiOjE3NTcxNDQ2NzgsImF1ZCI6Imh0dHBzOi8veW91cmRvbWFpbi5jb20iLCJpc3MiOiJmZWF0aGVycyIsImp0aSI6IjQyMzQzODM0LWRhZjQtNDdjYy1iZGU0LWNjY2Y0MjUxODM2OCJ9.e7f88Npykl3jVR4cmwapGaETDuekylRUoYb2Is6l2CU",
+      );
     });
   });
-
-
 
   getMessageSocket.on("created", (data) {
     print("NEW_MESSAGE ${data}");

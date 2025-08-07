@@ -1,5 +1,5 @@
-name: feathers_auth_flutter_example
-description: Demonstrates how to use the feathers_auth_flutter plugin.
+name: feathers_client_flutter_example
+description: Demonstrates how to use the feathers_client_flutter plugin.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  feathers_auth_flutter:
+  feathers_client_flutter:
     path: ../
 
   cupertino_icons: ^1.0.0

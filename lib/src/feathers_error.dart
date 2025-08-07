@@ -1,4 +1,4 @@
-part of feathers_auth_flutter;
+part of feathers_client_flutter;
 
 FeathersError featherErrorFromJson(String str) =>
     FeathersError.fromJson(json.decode(str));

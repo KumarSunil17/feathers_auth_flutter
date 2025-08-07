@@ -1,4 +1,4 @@
-part of feathers_auth_flutter;
+part of feathers_client_flutter;
 
 enum RequestMethod { get, post, patch, delete }
 
@@ -265,7 +265,7 @@ class FlutterFeatherService extends FeathersService {
       print("ON_SOCKET_CONNECT  ${e}");
     });
 
-    socket.onDisconnect((e){
+    socket.onDisconnect((e) {
       completer.complete(e);
       print("ON_SOCKET_DISCONNECT  ${e}");
     });
@@ -277,7 +277,7 @@ class FlutterFeatherService extends FeathersService {
     final completer = Completer<dynamic>();
 
     if (socket.connected) {
-      socket.emit(servicePath + " "+ event, data);
+      socket.emit(servicePath + " " + event, data);
       completer.complete(data);
     } else {
       completer.completeError('Socket not connected');
@@ -290,7 +290,7 @@ class FlutterFeatherService extends FeathersService {
     final completer = Completer<dynamic>();
 
     if (socket.connected) {
-      socket.emitWithAck(servicePath + " "+ event, data, ack: (response) {
+      socket.emitWithAck(servicePath + " " + event, data, ack: (response) {
         completer.complete(response);
       });
     } else {
@@ -302,11 +302,11 @@ class FlutterFeatherService extends FeathersService {
 
   @override
   void on(String event, Function(dynamic data) callback) {
-    socket.on(servicePath +" "+ event, callback);
+    socket.on(servicePath + " " + event, callback);
   }
 
   @override
   void off(String event) {
-    socket.off(servicePath + " "+ event);
+    socket.off(servicePath + " " + event);
   }
 }

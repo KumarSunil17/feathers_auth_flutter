@@ -1,4 +1,4 @@
-package com.smarttersstudio.feathers_auth_flutter
+package com.smarttersstudio.feathers_client_flutter
 
 import androidx.annotation.NonNull
 
@@ -18,7 +18,7 @@ class FeathersAuthFlutterPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "feathers_auth_flutter")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "feathers_client_flutter")
     channel.setMethodCallHandler(this)
   }
 

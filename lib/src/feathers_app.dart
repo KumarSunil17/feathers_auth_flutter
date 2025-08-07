@@ -1,4 +1,4 @@
-part of feathers_auth_flutter;
+part of feathers_client_flutter;
 
 abstract class FeathersApp {
   ///
@@ -37,11 +37,12 @@ class FlutterFeathersApp extends FeathersApp {
     _socket = socketClient.io(baseUrl, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
-      'reconnect':true
+      'reconnect': true
     });
     super._socket = _socket;
   }
- @override
+
+  @override
   void setAccessToken(String token) {
     _dio.options.headers["Authorization"] = "Bearer $token";
   }
@@ -59,5 +60,4 @@ class FlutterFeathersApp extends FeathersApp {
   /// Raw dio client for other api calls
   ///
   Dio get rawDio => _dio;
-
 }
