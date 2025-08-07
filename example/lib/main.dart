@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:async';
 import 'package:feathers_auth_flutter/feathers_auth_flutter.dart';
 import 'package:feathers_auth_flutter_example/gender_response.dart';
-import 'package:feathers_auth_flutter_example/message_response.dart';
 
 Future<void> main() async {
   ///
