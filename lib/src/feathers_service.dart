@@ -28,14 +28,16 @@ abstract class FeathersService {
   ///
   Future<Response<T>> get<T>(
       {Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder});
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers});
 
   ///
   /// FIND method request with required id and optional queryParameters
   ///
   Future<Response<T>> find<T>(String id,
       {Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder});
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers});
 
   ///
   /// CREATE method request with and optional body and query Parameters
@@ -43,7 +45,8 @@ abstract class FeathersService {
   Future<Response<T>> create<T>(
       {dynamic body = const {},
       Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder});
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers});
 
   ///
   /// FIND method request with required id and optional queryParameters
@@ -51,7 +54,8 @@ abstract class FeathersService {
   Future<Response<T>> update<T>(String id,
       {dynamic body = const {},
       Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder});
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers});
 
   ///
   /// PATCH method request with required id and optional queryParameters
@@ -59,7 +63,8 @@ abstract class FeathersService {
   Future<Response<T>> patch<T>(String id,
       {dynamic body = const {},
       Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder});
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers});
 
   ///
   /// DELETE method request with required id and optional queryParameters
@@ -67,7 +72,8 @@ abstract class FeathersService {
   Future<Response<T>> delete<T>(String id,
       {dynamic body = const {},
       Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder});
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers});
 
   ///
   /// Connect to the socket server
@@ -120,15 +126,13 @@ class FlutterFeatherService extends FeathersService {
   socketClient.Socket get socket => app._socket;
 
   @override
-  Future<Response<T>> get<T>({
-    Map<String, dynamic> queryParameters = const {},
-    T Function(dynamic data)? decoder,
-  }) async {
+  Future<Response<T>> get<T>(
+      {Map<String, dynamic> queryParameters = const {},
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers}) async {
     try {
-      final Response response = await app._dio.get(
-        path,
-        queryParameters: queryParameters,
-      );
+      final Response response = await app._dio.get(path,
+          queryParameters: queryParameters, options: Options(headers: headers));
 
       if (decoder != null) {
         final T decodedData = decoder(response.data);
@@ -142,14 +146,13 @@ class FlutterFeatherService extends FeathersService {
   }
 
   @override
-  Future<Response<T>> find<T>(
-    String id, {
-    Map<String, dynamic> queryParameters = const {},
-    T Function(dynamic data)? decoder,
-  }) async {
+  Future<Response<T>> find<T>(String id,
+      {Map<String, dynamic> queryParameters = const {},
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers}) async {
     try {
-      final Response<T> response =
-          await app._dio.get('$path/$id', queryParameters: queryParameters);
+      final Response<T> response = await app._dio.get('$path/$id',
+          queryParameters: queryParameters, options: Options(headers: headers));
       if (decoder != null) {
         final T decodedData = decoder(response.data);
         return transformResponse(response, decodedData);
@@ -161,14 +164,16 @@ class FlutterFeatherService extends FeathersService {
   }
 
   @override
-  Future<Response<T>> create<T>({
-    dynamic body = const {},
-    Map<String, dynamic> queryParameters = const {},
-    T Function(dynamic data)? decoder,
-  }) async {
+  Future<Response<T>> create<T>(
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters = const {},
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers}) async {
     try {
-      final Response<T> response = await app._dio
-          .post<T>(path, data: body, queryParameters: queryParameters);
+      final Response<T> response = await app._dio.post<T>(path,
+          data: body,
+          queryParameters: queryParameters,
+          options: Options(headers: headers));
       if (decoder != null) {
         final T decodedData = decoder(response.data);
         return transformResponse(response, decodedData);
@@ -180,12 +185,32 @@ class FlutterFeatherService extends FeathersService {
   }
 
   @override
-  Future<Response<T>> update<T>(
-    String id, {
-    dynamic body = const {},
-    Map<String, dynamic> queryParameters = const {},
-    T Function(dynamic data)? decoder,
-  }) async {
+  Future<Response<T>> update<T>(String id,
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters = const {},
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers}) async {
+    try {
+      final Response<T> response = await app._dio.patch('$path/$id',
+          data: body,
+          queryParameters: queryParameters,
+          options: Options(headers: headers));
+      if (decoder != null) {
+        final T decodedData = decoder(response.data);
+        return transformResponse(response, decodedData);
+      }
+      return transformResponse(response, response.data as T);
+    } catch (error) {
+      return _handleError(error);
+    }
+  }
+
+  @override
+  Future<Response<T>> patch<T>(String id,
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters = const {},
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers}) async {
     try {
       final Response<T> response = await app._dio
           .patch('$path/$id', data: body, queryParameters: queryParameters);
@@ -200,32 +225,11 @@ class FlutterFeatherService extends FeathersService {
   }
 
   @override
-  Future<Response<T>> patch<T>(
-    String id, {
-    dynamic body = const {},
-    Map<String, dynamic> queryParameters = const {},
-    T Function(dynamic data)? decoder,
-  }) async {
-    try {
-      final Response<T> response = await app._dio
-          .patch('$path/$id', data: body, queryParameters: queryParameters);
-      if (decoder != null) {
-        final T decodedData = decoder(response.data);
-        return transformResponse(response, decodedData);
-      }
-      return transformResponse(response, response.data as T);
-    } catch (error) {
-      return _handleError(error);
-    }
-  }
-
-  @override
-  Future<Response<T>> delete<T>(
-    String id, {
-    dynamic body = const {},
-    Map<String, dynamic> queryParameters = const {},
-    T Function(dynamic data)? decoder,
-  }) async {
+  Future<Response<T>> delete<T>(String id,
+      {dynamic body = const {},
+      Map<String, dynamic> queryParameters = const {},
+      T Function(dynamic data)? decoder,
+      Map<String, dynamic>? headers}) async {
     try {
       final Response<T> response =
           await app._dio.delete('$path/$id', queryParameters: queryParameters);
