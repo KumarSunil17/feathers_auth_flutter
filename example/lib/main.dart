@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:async';
 import 'package:feathers_client_flutter/feathers_client_flutter.dart';
 import 'package:feathers_client_flutter_example/gender_response.dart';
@@ -25,8 +24,6 @@ Future<void> main() async {
   ///
   final FlutterFeatherService userService =
       app.service('/v1/masterdata/gender-master');
-  final FlutterFeatherService messageService =
-      app.service('/v1/chat/personal-chat/messages');
   final FlutterFeatherService getMessageSocket =
       app.service('v1/message-recipients');
 
