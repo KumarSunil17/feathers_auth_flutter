@@ -13,10 +13,8 @@ abstract class FeathersService {
   ///
   String servicePath;
 
-  FeathersService(
-    this.app,
-    this.servicePath,
-  );
+  FeathersService(this.app,
+      this.servicePath,);
 
   ///
   /// Full path/url for api calls
@@ -26,54 +24,52 @@ abstract class FeathersService {
   ///
   /// GET method request with optional queryParameters
   ///
-  Future<Response<T>> get<T>(
-      {Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers});
+  Future<Response<T>> get<T>({Map<String, dynamic> queryParameters,
+    T Function(dynamic data)? decoder,
+    Map<String, dynamic>? headers});
 
   ///
   /// FIND method request with required id and optional queryParameters
   ///
   Future<Response<T>> find<T>(String id,
       {Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers});
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers});
 
   ///
   /// CREATE method request with and optional body and query Parameters
   ///
-  Future<Response<T>> create<T>(
-      {dynamic body = const {},
-      Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers});
+  Future<Response<T>> create<T>({dynamic body = const {},
+    Map<String, dynamic> queryParameters,
+    T Function(dynamic data)? decoder,
+    Map<String, dynamic>? headers});
 
   ///
   /// FIND method request with required id and optional queryParameters
   ///
   Future<Response<T>> update<T>(String id,
       {dynamic body = const {},
-      Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers});
+        Map<String, dynamic> queryParameters,
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers});
 
   ///
   /// PATCH method request with required id and optional queryParameters
   ///
   Future<Response<T>> patch<T>(String id,
       {dynamic body = const {},
-      Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers});
+        Map<String, dynamic> queryParameters,
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers});
 
   ///
   /// DELETE method request with required id and optional queryParameters
   ///
   Future<Response<T>> delete<T>(String id,
       {dynamic body = const {},
-      Map<String, dynamic> queryParameters,
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers});
+        Map<String, dynamic> queryParameters,
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers});
 
   ///
   /// Connect to the socket server
@@ -126,10 +122,9 @@ class FlutterFeatherService extends FeathersService {
   socketClient.Socket get socket => app._socket;
 
   @override
-  Future<Response<T>> get<T>(
-      {Map<String, dynamic> queryParameters = const {},
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers}) async {
+  Future<Response<T>> get<T>({Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+    Map<String, dynamic>? headers}) async {
     try {
       final Response response = await app._dio.get(path,
           queryParameters: queryParameters, options: Options(headers: headers));
@@ -141,15 +136,15 @@ class FlutterFeatherService extends FeathersService {
       return transformResponse(response, response.data as T);
     } catch (error, s) {
       print("ERROR $error\n$s");
-      return _handleError(error);
+      throw _handleError(error);
     }
   }
 
   @override
   Future<Response<T>> find<T>(String id,
       {Map<String, dynamic> queryParameters = const {},
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers}) async {
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers}) async {
     try {
       final Response<T> response = await app._dio.get('$path/$id',
           queryParameters: queryParameters, options: Options(headers: headers));
@@ -159,18 +154,17 @@ class FlutterFeatherService extends FeathersService {
       }
       return transformResponse(response, response.data as T);
     } catch (error) {
-      return _handleError(error);
+      throw _handleError(error);
     }
   }
 
   @override
-  Future<Response<T>> create<T>(
-      {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {},
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers}) async {
+  Future<Response<T>> create<T>({dynamic body = const {},
+    Map<String, dynamic> queryParameters = const {},
+    T Function(dynamic data)? decoder,
+    Map<String, dynamic>? headers}) async {
     try {
-      final Response<T> response = await app._dio.post<T>(path,
+      final Response<T> response = await app._dio.post(path,
           data: body,
           queryParameters: queryParameters,
           options: Options(headers: headers));
@@ -180,16 +174,16 @@ class FlutterFeatherService extends FeathersService {
       }
       return transformResponse(response, response.data as T);
     } catch (error) {
-      return _handleError(error);
+      throw _handleError(error);
     }
   }
 
   @override
   Future<Response<T>> update<T>(String id,
       {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {},
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers}) async {
+        Map<String, dynamic> queryParameters = const {},
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers}) async {
     try {
       final Response<T> response = await app._dio.patch('$path/$id',
           data: body,
@@ -201,16 +195,16 @@ class FlutterFeatherService extends FeathersService {
       }
       return transformResponse(response, response.data as T);
     } catch (error) {
-      return _handleError(error);
+      throw _handleError(error);
     }
   }
 
   @override
   Future<Response<T>> patch<T>(String id,
       {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {},
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers}) async {
+        Map<String, dynamic> queryParameters = const {},
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers}) async {
     try {
       final Response<T> response = await app._dio
           .patch('$path/$id', data: body, queryParameters: queryParameters);
@@ -220,35 +214,56 @@ class FlutterFeatherService extends FeathersService {
       }
       return transformResponse(response, response.data as T);
     } catch (error) {
-      return _handleError(error);
+      throw _handleError(error);
     }
   }
 
   @override
   Future<Response<T>> delete<T>(String id,
       {dynamic body = const {},
-      Map<String, dynamic> queryParameters = const {},
-      T Function(dynamic data)? decoder,
-      Map<String, dynamic>? headers}) async {
+        Map<String, dynamic> queryParameters = const {},
+        T Function(dynamic data)? decoder,
+        Map<String, dynamic>? headers}) async {
     try {
       final Response<T> response =
-          await app._dio.delete('$path/$id', queryParameters: queryParameters);
+      await app._dio.delete('$path/$id', queryParameters: queryParameters);
       if (decoder != null) {
         final T decodedData = decoder(response.data);
         return transformResponse(response, decodedData);
       }
       return transformResponse(response, response.data as T);
     } catch (error) {
-      return _handleError(error);
+      throw _handleError(error);
     }
   }
 
   Future<Response<T>> _handleError<T>(error) {
     if (error is DioException) {
-      if (error.response == null) {
-        return Future.error(FeathersError.noInternet());
-      } else {
-        return Future.error(FeathersError.fromJson(error.response!.data));
+      switch (error.type) {
+        case DioExceptionType.badCertificate:
+          return Future.error(FeathersError.noInternet(result: false,
+              name: "Bad Certificate",
+              message: "SSL error",
+              code: 0,
+              isRestError: false));
+
+        case DioExceptionType.badResponse:
+          return Future.error(FeathersError.fromJson(error.response!.data));
+
+        case DioExceptionType.cancel:
+          return Future.value(null);
+
+        case DioExceptionType.connectionError:
+        case DioExceptionType.connectionTimeout:
+        case DioExceptionType.receiveTimeout:
+        case DioExceptionType.sendTimeout:
+          return Future.error(FeathersError.noInternet());
+        case DioExceptionType.unknown:
+          return Future.error(FeathersError(isRestError: false,
+              code: 0,
+              message: error.response?.data,
+              name: error.message,
+              result: false));
       }
     } else {
       return Future.error(FeathersError(

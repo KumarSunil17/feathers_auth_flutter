@@ -2,6 +2,7 @@ library feathers_client_flutter;
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io' as IO;
 import 'package:dio/dio.dart';
 import 'package:socket_io_client/socket_io_client.dart' as socketClient;
