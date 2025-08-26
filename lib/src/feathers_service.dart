@@ -146,7 +146,7 @@ class FlutterFeatherService extends FeathersService {
         T Function(dynamic data)? decoder,
         Map<String, dynamic>? headers}) async {
     try {
-      final Response<T> response = await app._dio.get('$path/$id',
+      final Response response = await app._dio.get('$path/$id',
           queryParameters: queryParameters, options: Options(headers: headers));
       if (decoder != null) {
         final T decodedData = decoder(response.data);
@@ -164,7 +164,7 @@ class FlutterFeatherService extends FeathersService {
     T Function(dynamic data)? decoder,
     Map<String, dynamic>? headers}) async {
     try {
-      final Response<T> response = await app._dio.post(path,
+      final Response response = await app._dio.post(path,
           data: body,
           queryParameters: queryParameters,
           options: Options(headers: headers));
@@ -185,7 +185,7 @@ class FlutterFeatherService extends FeathersService {
         T Function(dynamic data)? decoder,
         Map<String, dynamic>? headers}) async {
     try {
-      final Response<T> response = await app._dio.patch('$path/$id',
+      final Response response = await app._dio.patch('$path/$id',
           data: body,
           queryParameters: queryParameters,
           options: Options(headers: headers));
@@ -206,7 +206,7 @@ class FlutterFeatherService extends FeathersService {
         T Function(dynamic data)? decoder,
         Map<String, dynamic>? headers}) async {
     try {
-      final Response<T> response = await app._dio
+      final Response response = await app._dio
           .patch('$path/$id', data: body, queryParameters: queryParameters);
       if (decoder != null) {
         final T decodedData = decoder(response.data);
