@@ -242,7 +242,7 @@ class FlutterFeatherService extends FeathersService {
     }
   }
 
-  Object _handleError<T>(error) {
+  FeathersError _handleError<T>(error) {
     if (error is DioException) {
       switch (error.type) {
         case DioExceptionType.badCertificate:
