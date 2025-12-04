@@ -7,7 +7,7 @@ Future<void> main() async {
   /// Initialize app with your base url and authentication configs if any
   ///
   FlutterFeathersApp app = FlutterFeathersApp(
-    "http://192.168.29.241:3030",
+    "https://api-dev.thementr.com",
   );
 
   app.initialize();
@@ -23,7 +23,7 @@ Future<void> main() async {
   /// Create you service providing service path
   ///
   final FlutterFeatherService userService =
-      app.service('/v1/masterdata/gender-master');
+      app.service('/v1/mentor-management/refer-earn');
   final FlutterFeatherService getMessageSocket =
       app.service('v1/message-recipients');
 
